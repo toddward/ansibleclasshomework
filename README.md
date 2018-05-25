@@ -1,3 +1,35 @@
+## Production AWS Setup for Tower
+Credentials in order to communicate with AWS instances should be set up in the following manner:
+* Acquire the GUID setup from OpenTLC.
+* `ssh` to your bastion machine:
+  ```
+  [laptop ]$ ssh -i ~/.ssh/id_rsa twardzin-redhat.com@bastion.9ce4.example.opentlc.com
+  ```
+* Get the key information from the bastion:
+  ```
+  sudo cat /root/.ssh/${GUID}key.pem 
+  ```
+* In Ansible Tower, go to Settings (Gear) -> Credentials -> Create a New Credential
+* Fill the following out:
+  * Name
+  * Description
+  * Organization should be *Default*.
+  * Credential Type is *Machine*.
+  * Selecting *Machine* brings up additional information to fill out:
+    * Username should be `ec2-user`.
+    * Password should be blank.
+    * SSH Private Key should now get the key from `sudo cat /root/.ssh/${GUID}key.pem`.
+    * Privilege Escalation Method is set to *sudo*.
+  * When all the information is filled out, click *Save*.
+
+
+
+
+
+
+
+
+# >>Previous Readme from other build...probably should integrate into our readme.
 main.yaml
 
 > Configure SSH keys on Jumpbox
