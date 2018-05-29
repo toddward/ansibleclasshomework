@@ -4,7 +4,7 @@
   tasks:
   - name: Smoketest the frontend.
     uri:
-      url: http://frontend1.9ce4.example.opentlc.com/ansible
+      url: http://frontend1.9ce4.example.opentlc.com
       return_content: yes
     register: webpage
 
