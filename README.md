@@ -1,5 +1,5 @@
 ## Production AWS Setup for Tower
-## TEST
+
 Credentials in order to communicate with AWS instances should be set up in the following manner:
 1. Set up your project.
     * Name your project.
