@@ -8,6 +8,6 @@
       return_content: yes
     register: webpage
 
-# - name: Fail if AWESOME is not in the page content
-#   fail:
-#   when: "'AWESOME' not in webpage.content"
+  - name: Fail if Ansible Deployed Tomcat is not in the page content
+    fail:
+    when: "'Ansible Deployed Tomcat' not in webpage.content"
