@@ -1,6 +1,75 @@
-## Production AWS Setup for Tower
+## Step #1 - QA OpenStack Setup for Tower
+1. On your laptop, provision the workstation to accept OpenStack related configurations.
+  * On workstation node issue the following commands: 
+    * `wget http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub`
+    * `cat openstack.pub  >> /home/twardzin-redhat.com/.ssh/authorized_keys`
+    * `wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
+    * `sudo yum -y install 'ls *epel*.rpm'`
+    * `sudo yum install -y python python-devel python-pip gcc ansible`
+    * `sudo pip install shade`
+    * `sudo mkdir /etc/openstack`
+    * Create configuration file:
+      ```
+      sudo cat << EOF > /etc/openstack/clouds.yaml
+        clouds:
+          ospcloud:
+            auth:
+              auth_url: http://192.168.0.20:5000/
+              password: r3dh4t1!
+              project_name: admin
+              username: admin
+            identity_api_version: '3.0'
+            region_name: RegionOne
+        ansible:
+          use_hostnames: True
+          expand_hostvars: False
+          fail_on_errors: True
+        EOF
+        ```
+    * Create additional configuration file:
+      ```
+      sudo cat << EOF > /etc/openstack/osp_image.yml
+        - hosts: localhost
+          become: yes
+          gather_facts: false
+          tasks:
+          - name: download RHEL image
+            get_url:
+              url: http://www.opentlc.com/download/osp_advanced_networking/rhel-guest-image-7.2-20151102.0.x86_64.qcow2
+            dest: /root/rhel-guest-image-7.2-20151102.0.x86_64.qcow2
+          - os_image:
+              cloud: ospcloud
+              name: rhel-guest
+              container_format: bare
+              disk_format: qcow2
+              state: present
+              filename: /root/rhel-guest-image-7.2-20151102.0.x86_64.qcow2
+        EOF
+        ```
+    * `ansible-playbook /etc/openstack/osp_image.yml`
+    * `ansible localhost -m os_auth -a cloud=ospcloud`
+    * `ansible localhost -m os_user_facts -a cloud=ospcloud -v`
+    * Create a new OSP flavor:
+      ```
+      cat << EOF > osp_flavor.yml
+      - hosts: jumpbox
+          tasks:
+          - name: Create m2.small flavor
+            os_nova_flavor:
+              cloud: ospcloud
+              state: present
+              name: m2.small
+              ram: 2048
+              vcpus: 1
+              disk: 10
+        EOF
+      ```
+    * `ansible-playbook osp_flavor.yml`
+
+## Step #2 - Production AWS Setup for Tower
 
 Credentials in order to communicate with AWS instances should be set up in the following manner:
+
 1. Set up your project.
     * Name your project.
     * Set the SCM Type to Git.
@@ -45,105 +114,8 @@ Credentials in order to communicate with AWS instances should be set up in the f
     * *Project* should be set to your project name created in step #1.
     * *Playbook* should be set to the correct playbook from the git repo cloned in step #1.  In this case, set it to `Provision_AWS.yml`.
     * *Credential* should be set to what you named your credentials in step #3.
-    
+
+## 3. Setup Workflow Template
 
 
 
-
-
-
-
-# >>Previous Readme from other build...probably should integrate into our readme.
-main.yaml
-
-> Configure SSH keys on Jumpbox
-
-```
-ssh -i ./.ssh/yourprivatekey userid@workstation-${GUID}.rhpds.opentlc.com
-wget http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
-cat openstack.pub  >> ~/.ssh/authorized_keys
-```
-
-> Configure laptop or bastion host for ssh proxy
-
-```
-wget http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pem -O ~/.ssh/openstack.pem
-chmod 400 ~/.ssh/openstack.pem
-
-
-cat << EOF > /etc/ansible/openstack_ssh_config
-Host workstation-${GUID}.rhpds.opentlc.com
- Hostname workstation-${GUID}.rhpds.opentlc.com
- IdentityFile ~/.ssh/openstack.pem
- ForwardAgent yes
- User cloud-user
- StrictHostKeyChecking no
- PasswordAuthentication no
-
-Host 10.10.10.*
- User cloud-user
- IdentityFile ~/.ssh/openstack.pem
- ProxyCommand ssh -F ~/.ssh/openstack_ssh_config cloud-user@workstation-${GUID}.rhpds.opentlc.com -W %h:%p -vvv
- StrictHostKeyChecking no
-EOF
-
-
-cat << EOF > osp_test_inventory
-[jumpbox]
-workstation-${GUID}.rhpds.opentlc.com ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/openstack.pem
-EOF
-
-ansible -i osp_test_inventory all -m ping
-
-
-ansible -i osp_test_inventory jumpbox -m os_user_facts -a cloud=ospcloud -v
-
-cat << EOF > ssh_ansible.yaml
-- hosts: localhost
-  tasks:
-  - name: Add ssh_args in ansible.cfg to point to the user's SSH config
-    lineinfile:
-      path: /etc/ansible/ansible.cfg
-      insertafter: '^#ssh_args '
-      line: 'ssh_args = -F /etc/ansible/openstack_ssh_config -o ControlMaster=auto -o ControlPersist=5m -o LogLevel=QUIET'
-EOF
-```
-
-
- 
-Step 1: Deploy Insfrastructure on OSP 10
-
->roles/osp-instances/vars/frontend.yaml
-```
-instance_name: frontend
-group: frontends
-deployment: dev
-security_group_name: frontend_servers
-```
-
->roles/osp-instances/vars/app1.yaml
-```
-instance_name: app1
-group: apps
-deployment: dev
-security_group_name: app_servers
-```
-
->roles/osp-instances/vars/app2.yaml
-```
-instance_name: app2
-group: apps
-deployment: dev
-security_group_name: app_servers
-```
-
->roles/osp-instances/vars/db.yaml
-```
-instance_name: db
-group: appdbs
-deployment: dev
-security_group_name: db_servers
-```
-Step 2: Configure Instances 
-
-Step 3: Deploy example APP
