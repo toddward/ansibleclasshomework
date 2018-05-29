@@ -1,0 +1,4 @@
+- name: cleaner - delete the the tier app specfic additions
+  hosts: all
+  roles:
+    - cleaner
