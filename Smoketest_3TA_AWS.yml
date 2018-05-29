@@ -1,5 +1,6 @@
-# in the page contents.
-- uri:
+---
+- name: Run a smoketest.
+  uri:
     url: http://frontend1.9ce4.example.opentlc.com/ansible
     return_content: yes
   register: webpage
