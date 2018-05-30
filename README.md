@@ -2,7 +2,7 @@
 1. On your laptop, provision the workstation to accept OpenStack related configurations.
   * On workstation node issue the following commands: 
     * `wget http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub`
-    * `cat openstack.pub  >> /home/twardzin-redhat.com/.ssh/authorized_keys`
+    * `cat openstack.pub  >> /home/cloud-user/.ssh/authorized_keys`
     * `wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
     * `sudo yum -y install 'ls *epel*.rpm'`
     * `sudo yum install -y python python-devel python-pip gcc ansible`
