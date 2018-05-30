@@ -10,10 +10,10 @@
 - name: Smoketest the frontend.
   hosts: frontends
   tasks:
-  
+
   - name: Grab page content if it exists
     uri:
-      url: {{ ansible_host }}
+      url: "{{ ansible_host }}"
       return_content: yes
     register: webpage
 
