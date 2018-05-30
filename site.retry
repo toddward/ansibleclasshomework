@@ -1,1 +1,1 @@
-workstation-0110.rhpds.opentlc.com
+workstation-{{ GUID }}.rhpds.opentlc.com
