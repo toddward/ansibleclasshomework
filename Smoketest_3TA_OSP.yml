@@ -2,12 +2,16 @@
 - name: Smoketest the 3 tier OSP Install
   hosts: jumpbox
   tasks:
-  
+
   - name: Gather facts
     include_role: 
       name: osp-facts
 
-  - name: Smoketest the frontend.
+- name: Smoketest the frontend.
+  hosts: frontends
+  tasks:
+  
+  - name: Grab page content if it exists
     uri:
       url: {{ ansible_host }}
       return_content: yes
