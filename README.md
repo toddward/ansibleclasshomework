@@ -2,7 +2,7 @@
 1. On your laptop, provision the workstation to accept OpenStack related configurations.
   * On workstation node issue the following commands: 
     * `wget http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub`
-    * `cat openstack.pub  >> /home/twardzin-redhat.com/.ssh/authorized_keys`
+    * `cat openstack.pub  >> /home/npoyant-redhat.com/.ssh/authorized_keys`
     * `wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
     * `sudo yum -y install 'ls *epel*.rpm'`
     * `sudo yum install -y python python-devel python-pip gcc ansible`
@@ -82,13 +82,13 @@ Credentials in order to communicate with AWS instances should be set up in the f
         * Source should be `Amazon EC2`.
         * Set the *Credential* to the teacher supplied `AWS RO Credential`.
         * Region should be *US East (Northern Virginia)*.
-        * Set the *Instance Filters* to `tag:owner=twardzin@redhat.com`.  Or, whatever your resource identifer is.
+        * Set the *Instance Filters* to `tag:owner=npoyant@redhat.com`.  Or, whatever your resource identifer is.
     * TODO: Put section here about adding the groups pointing to AWS Groups for reference later on in the Provision_AWS.yml playbook.
 3. Set up credentials in order for Ansible Tower to communicate to 3 Tier Resources.
     * Acquire the GUID setup from OpenTLC.
     * `ssh` to your bastion machine:
       ```
-      [laptop ]$ ssh -i ~/.ssh/id_rsa twardzin-redhat.com@bastion.9ce4.example.opentlc.com
+      [laptop ]$ ssh -i ~/.ssh/id_rsa npoyant-redhat.com@bastion.9ce4.example.opentlc.com
       ```
     * Get the key information from the bastion:
       ```
