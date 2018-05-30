@@ -13,7 +13,7 @@
 
   - name: Grab page content if it exists
     uri:
-      url: http://"{{ ansible_host }}"
+      url: "http://{{ ansible_host }}"
       return_content: yes
     register: webpage
 
