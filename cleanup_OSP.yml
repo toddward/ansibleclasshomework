@@ -12,20 +12,20 @@
 ##Create Fronend Instance
     - name: Create frontend instance
       include_role:
-        name: osp-instance-delete
+        name: osp-instance-cleanup
         vars_from: frontend.yaml
   ###Create App1 server 
     - name: Create app1 instance
       include_role:
-        name: osp-instance-delete
+        name: osp-instance-cleanup
         vars_from: app1.yaml
   ##Create App2 server
     - name: Create app2 instance
       include_role:
-        name: osp-instance-delete
+        name: osp-instance-cleanup
         vars_from: app2.yaml
   ##Create DB server
     - name: Create db instance
       include_role:
-        name: osp-instance-delete
+        name: osp-instance-cleanup
         vars_from: db.yaml
