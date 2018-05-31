@@ -43,7 +43,8 @@
       os_server_actions:
         action: start
         server: "{{ item.name }}"
-        
+      with_items: "{{result.ansible_facts.openstack_servers}}"
+
 # Setup front-end load balancer tier
 - name: setup load-balancer tier
   hosts: frontends
